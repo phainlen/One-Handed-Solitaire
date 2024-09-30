@@ -1,4 +1,3 @@
-
 # Define the suits and ranks
 $suits = @('H', 'D', 'C', 'S')
 #$suits = @([char]9825,[char]9826,[char]9827,[char]9824)
@@ -96,31 +95,50 @@ while ($number_of_cards_in_deck -ge 0)
 	write-host "$number_of_cards_in_extra_hand Extra Cards: $extraHand"		
 	write-host "$number_of_cards_in_playable_hand in Player Hand: $playableHand"
 	#pause
+	$number_of_cards_in_deck = $shuffledDeck.Count
+	$number_of_cards_in_extra_hand = $extraHand.Count
+	$number_of_cards_in_playable_hand = $playableHand.Count
 	
-	$FourthCardNumber = $playableHand[3].Substring(0,1)
-	$FourthCardSuit   = $playableHand[3].Substring(1,1)
-	
+	if ($number_of_cards_in_playable_hand -gt 2)
+	{
+		$LastCardNumber = $playableHand[3].Substring(0,1)
+		$LastCardSuit   = $playableHand[3].Substring(1,1)
+	}
+	elseif($number_of_cards_in_playable_hand -eq 2)
+	{
+		$LastCardNumber = $playableHand[1].Substring(0,1)
+		$LastCardSuit   = $playableHand[1].Substring(1,1)		
+	}
+	else #zero cards left!  You win!
+	{
+		Write-Host "You Won"
+		break
+	}
 	
 	$FirstCardNumber  = $playableHand[0].Substring(0,1)
 	$FirstCardSuit    = $playableHand[0].Substring(1,1)
 
-	$number_of_cards_in_deck = $shuffledDeck.Count
-	$number_of_cards_in_extra_hand = $extraHand.Count
-	$number_of_cards_in_playable_hand = $playableHand.Count
-
-	if ($FourthCardNumber -eq $FirstCardNumber)
+	if ($LastCardNumber -eq $FirstCardNumber)
 	{
 		#Discard all four playable cards
 		#When removing at 0 then everything changes numbers. 1 becomes 0.  if we remove starting with the last card then we can remove them in reverse order.
-		$playableHand.RemoveAt(3)
-		$playableHand.RemoveAt(2)
-		$playableHand.RemoveAt(1)
-		$playableHand.RemoveAt(0)
+		if ($number_of_cards_in_playable_hand -gt 2)
+		{
+			$playableHand.RemoveAt(3)
+			$playableHand.RemoveAt(2)
+			$playableHand.RemoveAt(1)
+			$playableHand.RemoveAt(0)
+		}
+		else
+		{
+			$playableHand.RemoveAt(1)
+			$playableHand.RemoveAt(0)
+		}
 		
 		$Continue_processing_extra_cards = $true #This is important for processing the final cards when the deck is empty
 
 	}
-	elseif ($FourthCardSuit -eq $FirstCardSuit)
+	elseif (($LastCardSuit -eq $FirstCardSuit) -and ($number_of_cards_in_playable_hand -gt 2))
 	{
 		#Discard middle two playable cards.
 		$playableHand.RemoveAt(1) | out-null
@@ -160,3 +178,27 @@ while ($number_of_cards_in_deck -ge 0)
 
 	}
 }
+
+<#
+The deck cards are gone.  Checking to see if your hand has more matches.
+0 cards in Deck       :
+0 Extra Cards:
+2 in Player Hand: 8D 2D
+You cannot call a method on a null-valued expression.
+At C:\Users\phain\Downloads\One-Handed-Solitaire.ps1:100 char:2
++     $FourthCardNumber = $playableHand[3].Substring(0,1)
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation: (:) [], RuntimeException
+    + FullyQualifiedErrorId : InvokeMethodOnNull
+
+You cannot call a method on a null-valued expression.
+At C:\Users\phain\Downloads\One-Handed-Solitaire.ps1:101 char:2
++     $FourthCardSuit   = $playableHand[3].Substring(1,1)
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation: (:) [], RuntimeException
+    + FullyQualifiedErrorId : InvokeMethodOnNull
+
+Exception calling "RemoveAt" with "1" argument(s): "Index was out of range. Must be non-negative and less than the
+size of the collection.
+Parameter name: index"
+#>
