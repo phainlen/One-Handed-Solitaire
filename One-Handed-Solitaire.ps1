@@ -1,6 +1,9 @@
+<#
+	DECK SETUP AND SHUFFLING
+#>
 # Define the suits and ranks
-$suits = @('H', 'D', 'C', 'S')
-#$suits = @([char]9825,[char]9826,[char]9827,[char]9824)
+#$suits = @('H', 'D', 'C', 'S')
+$suits = @([char]9825,[char]9826,[char]9827,[char]9824)
 $ranks = @('2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A')
 
 # Create an array to hold the deck of cards
@@ -25,23 +28,31 @@ for ($i = $deckSize - 1; $i -gt 0; $i--) {
 
 <#
            |----------------------------\/
-		[DECK] | [Extra] -->  [Playable]  --> [Discard]
+		[DECK] | [Extra] <-->  [Playable]  --> [Discard]
 		0..51  |  0 .. 51       0 .. 3 
 #>
+
+<#
+	VARIABLES
+#>
+
+#$stats_file = $PSScriptRoot"\one_handed_solitaire_stats.txt"
 
 # We need to store the shuffled deck into an array list so we can modify the deck as needed
 [System.Collections.ArrayList]$shuffledDeck = $deck
 #The four cards that the player is concerned about
 $playableHand = [System.Collections.ArrayList]::new()
-#$playableHand = @{}
+
 #The cards that were in the player's hand that couldn't be matched
 $extraHand = [System.Collections.ArrayList]::new()
-#$extraHand = @{}
 
-#break;
 $number_of_cards_in_deck=$shuffledDeck.Count
 
 $Continue_processing_extra_cards = $true
+
+<#
+	LOGIC
+#>
 
 #for ($number_of_cards_in_deck;$number_of_cards_in_deck -ge 0;$number_of_deck_left--)
 while ($number_of_cards_in_deck -ge 0)
@@ -90,11 +101,17 @@ while ($number_of_cards_in_deck -ge 0)
 	<#
 	    Check to see if there are matches and remove the cards necessary
 	#>
-	
-	write-host "$number_of_cards_in_deck cards in Deck       : $shuffledDeck"
-	write-host "$number_of_cards_in_extra_hand Extra Cards: $extraHand"		
-	write-host "$number_of_cards_in_playable_hand in Player Hand: $playableHand"
-	#pause
+	cls
+	write-host "========================================"
+	write-host "Cards in Deck : $number_of_cards_in_deck"
+	write-host	$shuffledDeck
+	write-host "========================================"
+	write-host "Extra Cards   : $number_of_cards_in_extra_hand"
+	write-host $extraHand
+	write-host "========================================"
+	write-host "Playable Cards: $number_of_cards_in_playable_hand"
+	write-host $playableHand
+
 	$number_of_cards_in_deck = $shuffledDeck.Count
 	$number_of_cards_in_extra_hand = $extraHand.Count
 	$number_of_cards_in_playable_hand = $playableHand.Count
@@ -178,27 +195,3 @@ while ($number_of_cards_in_deck -ge 0)
 
 	}
 }
-
-<#
-The deck cards are gone.  Checking to see if your hand has more matches.
-0 cards in Deck       :
-0 Extra Cards:
-2 in Player Hand: 8D 2D
-You cannot call a method on a null-valued expression.
-At C:\Users\phain\Downloads\One-Handed-Solitaire.ps1:100 char:2
-+     $FourthCardNumber = $playableHand[3].Substring(0,1)
-+     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : InvalidOperation: (:) [], RuntimeException
-    + FullyQualifiedErrorId : InvokeMethodOnNull
-
-You cannot call a method on a null-valued expression.
-At C:\Users\phain\Downloads\One-Handed-Solitaire.ps1:101 char:2
-+     $FourthCardSuit   = $playableHand[3].Substring(1,1)
-+     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : InvalidOperation: (:) [], RuntimeException
-    + FullyQualifiedErrorId : InvokeMethodOnNull
-
-Exception calling "RemoveAt" with "1" argument(s): "Index was out of range. Must be non-negative and less than the
-size of the collection.
-Parameter name: index"
-#>
