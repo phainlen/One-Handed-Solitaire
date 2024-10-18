@@ -123,7 +123,8 @@ while ($not_won)
 		$number_of_cards_in_deck = $shuffledDeck.Count
 		$number_of_cards_in_extra_hand = $extraHand.Count
 		$number_of_cards_in_playable_hand = $playableHand.Count
-		
+
+  		#Retrieve the suit and number of the cards
 		if ($number_of_cards_in_playable_hand -gt 2)
 		{
 			$LastCardNumber = $playableHand[3].Substring(0,1)
@@ -147,7 +148,7 @@ while ($not_won)
 		if ($LastCardNumber -eq $FirstCardNumber)
 		{
 			#Discard all four playable cards
-			#When removing at 0 then everything changes numbers. 1 becomes 0.  if we remove starting with the last card then we can remove them in reverse order.
+			#When removing at 0 then everything changes numbers. 1 becomes 0.  if we remove the cards starting with the last card then we can remove them in reverse order.
 			if ($number_of_cards_in_playable_hand -gt 2)
 			{
 				$playableHand.RemoveAt(3)
@@ -207,10 +208,13 @@ while ($not_won)
 		}
 	}
 
+ 	#pause  #<--If you want the game to be more interactive, uncomment the pause.  Otherwise, keeping it in will run games until a win occurs.
+
 	$games_played = $games_played + 1
 	
 	if ($not_won -eq $false)
 	{
+ 		#Calculate stats
 		$percentage_win = 100 - ($games_lost / $games_played * 100)
 		#$games_won = $games_won + $i
 		write-host "Games Played = $games_played"
